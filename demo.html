@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Super Decimal Demo</title>
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html, body {
+        height: 100%;
+      }
+      #domId {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script >
+  const tostr = (num, decimalLen) => {
+    let isNegtive = num < 0n;
+    let sign = isNegtive ? '-' : '';
+    let result = num.toString();
+    result = result.replace(/\-/, '');
+    const lens = result.length;
+    const inteLens = lens - decimalLen;
+    const inte = inteLens > 0 ? result.slice(0, inteLens) : '0';
+    let deci = inteLens >= 0 ? result.slice(inteLens, lens) : result.padStart(decimalLen, '0');
+    deci = deci.replace(/0*$/, ''); //这里为了处理多个0结尾的问题，例如5.0000 => 5, 3.30 => 3.3
+    if (deci) return `${sign}${inte}.${deci}`;
+    return `${sign}${inte}`;
+}
+
+
+    function SuperDecimal(numeric) {
+        const num = numeric;
+       /* if (!IsNumeric(num)) {
+          throw (new Error(`[input ${numeric}] is not an numerical type, please check it.`))
+        }*/
+
+        let [ints, decis] = String(num).split(".").concat("");
+        /** 
+         * 整数部分
+         * @type {string}
+         * @access public */
+        this.integer = ints;
+        /** 
+         * 整数部分字符长度
+         * @access public 
+         * @type {number}
+         * */
+        this.inteLens = ints.length;
+        /** 
+         * 小数部分
+         * @type {string}
+         * @access public 
+         * */
+        this.decimal = decis;
+        /** 
+         * 小数部分字符长度
+         * @type {number}
+         * @access public */
+        this.decimalLen = decis.length;
+        /** 
+         * 数字的正负性
+         * @type {boolean}
+         * @access public */
+        this.isNegtive = /^\-/.test(num);
+        /** 
+         * 数字的BigInt的表示
+         * @type {BigInt}
+         * @access public */
+        this.bigint = BigInt(ints + decis);
+        /**
+         * 数字的字符形式
+         * @type {string}
+         * @access public */
+        this.result = tostr(this.bigint, this.decimalLen);
+      }
+
+    const pow = (x, y) => {
+
+        const num1 = new SuperDecimal(x);
+        const num2 = new SuperDecimal(y);
+        
+        const index = num2.isNegtive ? num2.bigint * -1n : num2.bigint
+
+        const d = num1.bigint ** index;
+        let decimal = BigInt(num1.decimalLen) * index;
+        const end = BigInt(d.toString() + '0') / 2n;
+        decimal += 1n;
+        console.log(d, decimal, end)
+
+
+    }
+    </script>
+  </body>
+</html>
