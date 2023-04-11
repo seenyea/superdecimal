@@ -1,4 +1,8 @@
-import {tostr, convert2Str, IsNumeric} from "@root/uitls/util";
+import {
+  tostr,
+  convert2Str,
+  IsNumeric
+} from "@root/utils/util.js";
 
 function SuperDecimal(numeric) {
     const num = convert2Str(numeric);
